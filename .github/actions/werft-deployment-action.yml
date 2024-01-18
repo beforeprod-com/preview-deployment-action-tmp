@@ -1,0 +1,18 @@
+name: 'Werft deployment action'
+description: 'Deploys your project to werft.run: fast and easy (feasy)'
+inputs:
+  platform: #GO or #JS
+    description: Whether your project runs on GO or JS
+    required: true
+  build-folder: # where your app has been build
+    description: The folder in which you put the build artefacts e.g. /build
+    required: true
+outputs:
+  url: #The URL at which your preview app is hosted by werft
+    description: This is the url at which your app is hosted by werft
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+   - ${{ inputs.platform }}
+   - ${{ inputs.build-folder }}
