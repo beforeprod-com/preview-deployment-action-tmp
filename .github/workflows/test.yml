@@ -19,8 +19,8 @@ jobs:
         uses: ./ # Uses an action in the root directory
         id: shpr
         with:
+          build-folder: './build'
           platform: 'go'
-          build-folder: './'
       # Use the output from the `hello` step
       - name: Get the output time
         run: echo "The time was ${{ steps.shpr.outputs.time }}"
