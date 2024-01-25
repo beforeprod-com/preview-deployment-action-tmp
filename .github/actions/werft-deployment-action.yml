@@ -13,6 +13,6 @@ outputs:
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-   - ${{ inputs.platform }}
-   - ${{ inputs.build-folder }}
+  env:
+    INPUT_PLATFORM: ${{ inputs.platform }}
+    INPUT_BUILD_FOLDER: ${{ inputs.build-folder }}
