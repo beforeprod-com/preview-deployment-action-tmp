@@ -4,7 +4,7 @@ inputs:
   platform: #GO or #JS
     description: Whether your project runs on GO or JS
     required: true
-  build-folder: # where your app has been build
+  build_folder: # where your app has been build
     description: The folder in which you put the build artefacts e.g. /build
     required: true
 outputs:

@@ -2,5 +2,5 @@
 
 echo "shpr action starting..."
 echo "platform: $INPUT_PLATFORM"
-echo "build-folder: $INPUT_BUILD-FOLDER"
+echo "build-folder: $INPUT_BUILD_FOLDER"
 /shpr app list
