@@ -20,7 +20,7 @@ jobs:
         id: shpr
         with:
           build_folder: './go-test-app/build'
-          platform: 'go'
+          platform: 'GO'
       # Use the output from the `hello` step
       - name: Get the output time
         run: echo "The time was ${{ steps.shpr.outputs.time }}"
