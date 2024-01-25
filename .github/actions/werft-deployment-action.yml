@@ -4,7 +4,7 @@ inputs:
   platform: #GO or #JS
     description: Whether your project runs on GO or JS
     required: true
-  buildfolder: # where your app has been build
+  build-folder: # where your app has been build
     description: The folder in which you put the build artefacts e.g. /build
     required: true
 outputs:
@@ -13,6 +13,3 @@ outputs:
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  env:
-    INPUT_PLATFORM: ${{ inputs.platform }}
-    INPUT_BUILD_FOLDER: ${{ inputs.buildfolder }}
