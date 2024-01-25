@@ -14,12 +14,12 @@ jobs:
         with:
           go-version: 1.21
       - name: Build
-        run: go build -v ./go-test-app/main.go
+        run: go build -v -o ./go-test-app/build/app ./go-test-app/main.go
       - name: shpr action step
         uses: ./ # Uses an action in the root directory
         id: shpr
         with:
-          build_folder: './build'
+          build_folder: './go-test-app/build'
           platform: 'go'
       # Use the output from the `hello` step
       - name: Get the output time

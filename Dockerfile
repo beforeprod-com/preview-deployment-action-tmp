@@ -6,5 +6,7 @@ COPY entrypoint.sh /entrypoint.sh
 COPY bin/shpr /shpr
 COPY .werft /.werft
 
+VOLUME $INPUT_BUILD_FOLDER
+
 # Code file to execute when the docker container starts up (`entrypoint.sh`)
 ENTRYPOINT ["/entrypoint.sh"]
