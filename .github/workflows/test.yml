@@ -1,0 +1,20 @@
+on: [push]
+
+jobs:
+  shpr_list:
+    runs-on: ubuntu-latest
+    name: A job to list all running apps
+    steps:
+      # To use this repository's private action,
+      # you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: shpr action step
+        uses: ./ # Uses an action in the root directory
+        id: shpr
+        with:
+          platform: 'go'
+          build-folder: './'
+      # Use the output from the `hello` step
+      - name: Get the output time
+        run: echo "The time was ${{ steps.shpr.outputs.time }}"
