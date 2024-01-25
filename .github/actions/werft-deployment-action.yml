@@ -18,3 +18,5 @@ runs:
 args:
   - ${{ inputs.platform }}
   - ${{ inputs.build_folder }}
+env:
+  - INPUT_BUILD_FOLDER: ${{ inputs.build_folder }}
