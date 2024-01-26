@@ -14,7 +14,7 @@ jobs:
         with:
           go-version: 1.21
       - name: Build
-        run: env GOOS=linux GOARCH=amd64 go build -v -o ./go-test-app/build/app ./go-test-app/main.go
+        run: env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -v -o ./go-test-app/build/app ./go-test-app/main.go
       - name: shpr action step
         uses: ./ # Uses an action in the root directory
         id: shpr
