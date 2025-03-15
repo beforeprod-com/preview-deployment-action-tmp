@@ -15,12 +15,18 @@ jobs:
           go-version: 1.21
       - name: Build
         run: env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -v -o ./go-test-app/build/app ./go-test-app/main.go
+      - name: Download shpr binary
+        run: |
+          curl -L https://github.com/damonkeys/werft/releases/download/test-shpr-release-ot-v0.0.1/shpr -o shpr
+          chmod +x shpr
       - name: shpr action step
         uses: ./ # Uses an action in the root directory
         id: shpr
         with:
           build_folder: './go-test-app/build'
           platform: 'GO'
-      # Use the output from the `hello` step
+      # Use the output from the `shpr` step
       - name: Get the output time
         run: echo "The time was ${{ steps.shpr.outputs.time }}"
+      - name: Get the preview app url
+        run: echo "This it the url of your preview app ${{ steps.shpr.outputs.url }}"
