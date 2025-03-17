@@ -15,10 +15,6 @@ jobs:
           go-version: 1.21
       - name: Build
         run: env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -v -o ./go-test-app/build/app ./go-test-app/main.go
-      - name: Download shpr binary
-        run: |
-          curl -L https://github.com/damonkeys/werft/releases/download/test-shpr-release-ot-v0.0.1/shpr -o shpr
-          chmod +x shpr
       - name: shpr action step
         uses: ./ # Uses an action in the root directory
         id: shpr
