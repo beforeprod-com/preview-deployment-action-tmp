@@ -27,8 +27,6 @@ jobs:
         env:
           BP_USER: ${{ secrets.BP_USER }}
           BP_PASSWORD: ${{ secrets.BP_PASSWORD }}
-        run: |
-          echo "Secret is now available as $BP_USER/$BP_PASSWORD"
       # Use the output from the `shpr` step
       - name: Get the output time
         run: echo "The time was ${{ steps.shpr.outputs.time }}"
