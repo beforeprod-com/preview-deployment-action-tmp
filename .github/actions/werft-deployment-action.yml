@@ -19,4 +19,7 @@ runs:
     - ${{ inputs.platform }}
     - ${{ inputs.build_folder }}
   env:
+    - INPUT_PLATFORM: ${{ inputs.platform }}
+    - INPUT_BUILD_FOLDER: ${{ inputs.build_folder }}
+    - INPUT_BUILD_FOLDER: ${{ inputs.build_folder }}
     - INPUT_BUILD_FOLDER: ${{ inputs.build_folder }}

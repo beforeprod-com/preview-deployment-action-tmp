@@ -9,12 +9,22 @@ jobs:
       # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: 1.21
+          go-version: 1.24.1
+
       - name: Build
         run: env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -v -o ./go-test-app/build/app ./go-test-app/main.go
+
+      - name: Use github secrets as env vars
+        env:
+          BP_USER: ${{ secrets.BP_USER }}
+          BP_PASSWORD: ${{ secrets.BP_PASSWORD }}
+        run: |
+          echo "Secret is now available as $BP_USER/$BP_PASSWORD"
+
       - name: shpr action step
         uses: ./ # Uses an action in the root directory
         id: shpr
