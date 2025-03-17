@@ -1,4 +1,3 @@
 # This folder contains the binary of shpr
 
-This might not be the best solution to distribute shpr on github.
-Feel free to improve.
+We distribute the shpr binary with this action. This makes versioning easier.
