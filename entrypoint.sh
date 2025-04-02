@@ -6,9 +6,9 @@ echo "build-folder: $INPUT_BUILD_FOLDER"
 
 # Capture the output of shpr app start and extract the URL
 URL=$(/shpr app start $INPUT_PLATFORM $INPUT_BUILD_FOLDER | grep -o 'https://[^[:space:]]*')
-echo "::set-output name=url::$URL"
+echo "url=$URL" >> $GITHUB_OUTPUT
 
 /shpr app list
 
 # Set the time output
-echo "::set-output name=time::$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+echo "time=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_OUTPUT
