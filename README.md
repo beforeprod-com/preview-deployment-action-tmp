@@ -1,6 +1,40 @@
-# Werft Deployment GitHub Action Development
+# Werft Deployment GitHub Action
 
-This repository contains the source code for the Werft Deployment GitHub Action. For usage instructions, please see [.github/README.md](.github/README.md).
+A powerful GitHub Action for automated deployments using Werft. This action provides a streamlined way to deploy applications across different platforms, with built-in support for Go applications and extensibility for other platforms.
+
+## Features
+
+- 🚀 Automated deployments through Werft
+- 🔧 Multi-platform support (Go and more)
+- 🐳 Containerized execution for consistency
+- 🔒 Secure credential handling
+- 🧪 Built-in testing capabilities
+- 📦 Minimal container size using Alpine Linux
+
+## Quick Start
+
+Add this action to your GitHub Actions workflow:
+
+```yaml
+name: Deploy
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy with Werft
+        uses: your-org/werft-deployment-action@v1
+        with:
+          platform: GO
+          build-folder: ./build
+        env:
+          WERFT_TOKEN: ${{ secrets.WERFT_TOKEN }}
+```
 
 ## Development Setup
 
@@ -27,7 +61,12 @@ This repository contains the source code for the Werft Deployment GitHub Action.
 
 ### Local Development
 
-1. Clone the repository
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-org/werft-deployment-action.git
+   cd werft-deployment-action
+   ```
+
 2. Build the test application:
    ```bash
    cd go-test-app
@@ -44,31 +83,45 @@ This repository contains the source code for the Werft Deployment GitHub Action.
    docker run -e INPUT_PLATFORM=GO -e INPUT_BUILD_FOLDER=./go-test-app/build werft-deployment-action
    ```
 
-### Testing
+## Configuration
 
-The repository includes a test application in `go-test-app/` for development and testing purposes. The test workflow in `.github/workflows/test.yml` demonstrates how to use the action.
+### Input Parameters
 
-### Building the Action
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `platform` | Yes | Target platform (e.g., GO) |
+| `build-folder` | Yes | Path to the build output directory |
+| `additional-args` | No | Additional arguments for the Werft CLI |
 
-The action is containerized using Alpine Linux for minimal size. The build process:
+### Environment Variables
 
-1. Copies the entrypoint script and Werft CLI binary
-2. Sets up the necessary environment
-3. Configures the container to run the deployment process
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `WERFT_TOKEN` | Yes | Authentication token for Werft |
+| `WERFT_ENDPOINT` | No | Custom Werft endpoint URL |
 
-### Contributing
+## Testing
 
-1. Create a feature branch
-2. Make your changes
-3. Test locally using the test application
-4. Submit a pull request
+The repository includes a comprehensive test suite:
 
-### CI/CD
+1. **Unit Tests**: Run with `go test ./...`
+2. **Integration Tests**: Use the test application in `go-test-app/`
+3. **End-to-End Tests**: Available in `.github/workflows/test.yml`
 
-The repository uses GitHub Actions for CI/CD:
-- Automated testing on push
-- Action validation
-- Documentation updates
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Development Guidelines
+
+- Follow Go best practices and coding standards
+- Add tests for new features
+- Update documentation as needed
+- Keep commits clean and well-documented
 
 ## Troubleshooting
 
@@ -77,31 +130,47 @@ The repository uses GitHub Actions for CI/CD:
 1. **Action fails to start**
    - Check if the Werft CLI binary is present in `bin/shpr`
    - Verify the entrypoint script has execute permissions
+   - Check GitHub Actions logs for detailed error messages
 
 2. **Deployment fails**
    - Verify Werft credentials are correctly set
    - Check the build folder path is correct
    - Ensure the platform is supported
+   - Review Werft deployment logs
 
 3. **Container issues**
    - Verify Docker is running
    - Check container logs for detailed error messages
+   - Ensure sufficient disk space is available
 
 ## Maintenance
 
 ### Updating Dependencies
 
-- Update Go version in workflows if needed
-- Update Alpine base image in Dockerfile
-- Update Werft CLI binary in `bin/shpr`
+1. Update Go version in workflows if needed
+2. Update Alpine base image in Dockerfile
+3. Update Werft CLI binary in `bin/shpr`
+4. Run tests to ensure compatibility
 
 ### Version Management
 
-The action follows semantic versioning. Update version tags when:
-- Adding new features (minor version)
-- Fixing bugs (patch version)
-- Making breaking changes (major version)
+The action follows semantic versioning:
+- Major version: Breaking changes
+- Minor version: New features
+- Patch version: Bug fixes
+
+## Support
+
+- GitHub Issues: [Report bugs](https://github.com/your-org/werft-deployment-action/issues)
+- Documentation: [User Guide](.github/README.md)
+- Community: [Discussions](https://github.com/your-org/werft-deployment-action/discussions)
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Werft team for their excellent deployment platform
+- GitHub Actions community
+- Contributors and maintainers
