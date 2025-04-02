@@ -37,3 +37,18 @@ jobs:
         run: echo "The time was ${{ steps.shpr.outputs.time }}"
       - name: Get the preview app url
         run: echo "This it the url of your preview app ${{ steps.shpr.outputs.url }}"
+
+      - name: Comment PR with deployment URL
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const url = '${{ steps.shpr.outputs.url }}';
+            const comment = `🚀 Deployment URL: ${url}\n\nThis is your preview environment.`;
+            await github.rest.pulls.createReview({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              body: comment,
+              event: 'COMMENT'
+            });
