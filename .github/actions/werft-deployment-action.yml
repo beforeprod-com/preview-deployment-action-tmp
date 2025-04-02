@@ -12,14 +12,12 @@ inputs:
 outputs:
   url: #The URL at which your preview app is hosted by werft
     description: This is the url at which your app is hosted by werft
+  time: #The time when the deployment was completed
+    description: The timestamp when the deployment was completed
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.platform }}
-    - ${{ inputs.build_folder }}
+  entrypoint: '/entrypoint.sh'
   env:
-    - INPUT_PLATFORM: ${{ inputs.platform }}
-    - INPUT_BUILD_FOLDER: ${{ inputs.build_folder }}
-    - INPUT_BUILD_FOLDER: ${{ inputs.build_folder }}
-    - INPUT_BUILD_FOLDER: ${{ inputs.build_folder }}
+    INPUT_PLATFORM: ${{ inputs.platform }}
+    INPUT_BUILD_FOLDER: ${{ inputs.build_folder }}
