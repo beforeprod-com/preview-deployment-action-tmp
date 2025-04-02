@@ -10,6 +10,8 @@ A powerful GitHub Action for automated deployments using Werft. This action prov
 - 🔒 Secure credential handling
 - 🧪 Built-in testing capabilities
 - 📦 Minimal container size using Alpine Linux
+- 💬 Automatic PR comments with deployment URLs
+- 🔄 Go module support with caching
 
 ## Quick Start
 
@@ -17,9 +19,7 @@ Add this action to your GitHub Actions workflow:
 
 ```yaml
 name: Deploy
-on:
-  push:
-    branches: [ main ]
+on: [push]
 
 jobs:
   deploy:
@@ -100,6 +100,31 @@ jobs:
 | `WERFT_TOKEN` | Yes | Authentication token for Werft |
 | `WERFT_ENDPOINT` | No | Custom Werft endpoint URL |
 
+### Outputs
+
+| Output | Description |
+|--------|-------------|
+| `url` | The URL where your preview app is hosted |
+| `time` | Timestamp when the deployment was completed |
+
+## Features
+
+### Automatic PR Comments
+
+When pushing to a feature branch with an open pull request, the action will automatically:
+1. Deploy your changes
+2. Find the associated PR
+3. Comment the deployment URL as a PR review
+
+This makes it easy to access your preview environment directly from the PR.
+
+### Go Module Support
+
+The action includes built-in support for Go modules:
+- Automatic `go mod tidy` execution
+- Dependency caching for faster builds
+- Proper module initialization
+
 ## Testing
 
 The repository includes a comprehensive test suite:
@@ -142,6 +167,11 @@ The repository includes a comprehensive test suite:
    - Verify Docker is running
    - Check container logs for detailed error messages
    - Ensure sufficient disk space is available
+
+4. **Go module issues**
+   - Ensure `go.mod` exists in your project
+   - Check if `go mod tidy` runs successfully
+   - Verify Go version compatibility
 
 ## Maintenance
 
