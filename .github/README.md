@@ -1,10 +1,10 @@
 # Werft Deployment GitHub Action
 
-This GitHub Action enables automated deployment of applications to Werft, a platform for managing and deploying applications. It provides a streamlined way to deploy applications as part of your CI/CD pipeline.
+This GitHub Action enables automated deployment of applications to beforeprod.com, a platform for preview deployments. It provides a streamlined way to deploy applications as part of your CI/CD pipeline.
 
 ## Features
 
-- Automated deployment to Werft platform
+- Automated deployment to beforeprod.com platform
 - Support for Go applications
 - Preview URL generation for deployed applications
 - Simple configuration through GitHub Actions workflow

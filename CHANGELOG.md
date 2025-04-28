@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.1] - 2024-04-28
+
 ### Added
 - Preview URL logging when no PR exists for direct branch deployments
 - Automatic PR description updates with deployment URLs
@@ -40,7 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Redundant URL and time output steps from workflow
 - Dockerfile and entrypoint.sh as they're no longer needed
 
-## [0.1.0] - 2024-04-14
+## [0.0.0] - 2024-04-14
 
 ### Added
 - Initial release of the BeforeProd GitHub Action
