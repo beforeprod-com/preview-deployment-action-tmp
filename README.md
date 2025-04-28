@@ -1,206 +1,112 @@
-# Werft Deployment GitHub Action
+# BeforeProd GitHub Action
 
-A powerful GitHub Action for automated deployments using Werft. This action provides a streamlined way to deploy applications across different platforms, with built-in support for Go applications and extensibility for other platforms.
+This GitHub Action automatically deploys your application to [BeforeProd](https://beforeprod.com) and updates your PR description with the deployment URL. It also includes automatic cleanup of deployments when PRs are closed.
 
 ## Features
 
-- 🚀 Automated deployments through Werft
-- 🔧 Multi-platform support (Go and more)
-- 🐳 Containerized execution for consistency
+- 🚀 Automatic deployments to BeforeProd
+- 📝 Automatic PR description updates with deployment URLs
+- 🔄 Automatic cleanup of deployments when PRs are closed
+- 🛠️ Support for both Go and JavaScript applications
 - 🔒 Secure credential handling
-- 🧪 Built-in testing capabilities
-- 📦 Minimal container size using Alpine Linux
-- 💬 Automatic PR comments with deployment URLs
-- 🔄 Go module support with caching
+- 📦 Independent binary management for each action (currently because of KISS)
+- 📊 Preview URL logging for direct branch deployments (no PR required)
+- 🔄 Robust error handling with automatic retries for PR updates
 
-## Quick Start
+## Usage
 
-Add this action to your GitHub Actions workflow:
+### Deployment Action
+
+The deployment action (`.github/actions/preview_app`) handles the deployment of your application. Add the following to your workflow file (e.g., `.github/workflows/deploy.yml`):
 
 ```yaml
-name: Deploy
+name: Deploy to BeforeProd
 on: [push]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Deploy with Werft
-        uses: your-org/werft-deployment-action@v1
+      - name: Deploy to BeforeProd
+        uses: ./.github/actions/preview_app
         with:
-          platform: GO
-          build-folder: ./build
+          platform: 'JS'  # or 'GO' for Go applications
+          build_folder: './build'  # path to your build artifacts
+```
+
+> **Note**: The action will automatically update PR descriptions with deployment URLs. For direct branch pushes (without a PR), the deployment URL will be logged in the GitHub Actions output for easy access.
+
+### Cleanup Action
+
+The cleanup action (`.github/actions/cleanup`) automatically removes deployments when PRs are closed. Add this to a separate workflow file (e.g., `.github/workflows/cleanup.yml`):
+
+```yaml
+name: Cleanup PR Deployments
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cleanup deployment
+        uses: ./.github/actions/cleanup
         env:
-          WERFT_TOKEN: ${{ secrets.WERFT_TOKEN }}
+          BP_USER: ${{ secrets.BP_USER }}
+          BP_PASSWORD: ${{ secrets.BP_PASSWORD }}
 ```
 
-## Development Setup
+## Action Structure
 
-### Prerequisites
+The action is organized into two main components:
 
-- Go 1.24.1 or later
-- Docker
-- GitHub CLI (optional, for testing)
+1. **Preview App Action** (`.github/actions/preview_app/`)
+   - Handles the deployment of your application
+   - Updates PR descriptions with deployment URLs
+   - Triggered on `push` events
+   - Contains its own copy of the BeforeProd CLI binary
 
-### Project Structure
+2. **Cleanup Action** (`.github/actions/cleanup/`)
+   - Automatically cleans up deployments when PRs are closed
+   - Removes the deployment from BeforeProd
+   - Triggered on `pull_request` events with type `closed`
+   - Contains its own copy of the BeforeProd CLI binary
 
-```
-.
-├── .github/           # GitHub Action specific files
-│   ├── actions/      # Action implementation
-│   ├── workflows/    # CI/CD workflows
-│   └── README.md     # User-facing documentation
-├── bin/              # Binary files
-│   └── shpr         # Werft CLI binary
-├── go-test-app/      # Test application for development
-├── Dockerfile        # Container definition for the action
-└── entrypoint.sh     # Action entrypoint script
-```
+Each action maintains its own copy of the BeforeProd CLI binary, allowing for independent version management and updates.
 
-### Local Development
+## Inputs
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-org/werft-deployment-action.git
-   cd werft-deployment-action
-   ```
+### Preview App Action Inputs
 
-2. Build the test application:
-   ```bash
-   cd go-test-app
-   go build -o build/app main.go
-   ```
+| Input | Description | Required | Default |
+|-------|-------------|----------|---------|
+| `platform` | The platform your application runs on (`JS` or `GO`) | Yes | `JS` |
+| `build_folder` | The folder containing your build artifacts | Yes | `./build` |
 
-3. Test the action locally:
-   ```bash
-   # Using act (recommended)
-   act -j deploy
+### Cleanup Action Inputs
 
-   # Or manually using Docker
-   docker build -t werft-deployment-action .
-   docker run -e INPUT_PLATFORM=GO -e INPUT_BUILD_FOLDER=./go-test-app/build werft-deployment-action
-   ```
+The cleanup action doesn't require any inputs as it automatically extracts the necessary information from the PR description.
 
-## Configuration
+## Outputs
 
-### Input Parameters
-
-| Parameter | Required | Description |
-|-----------|----------|-------------|
-| `platform` | Yes | Target platform (e.g., GO) |
-| `build-folder` | Yes | Path to the build output directory |
-| `additional-args` | No | Additional arguments for the Werft CLI |
-
-### Environment Variables
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `WERFT_TOKEN` | Yes | Authentication token for Werft |
-| `WERFT_ENDPOINT` | No | Custom Werft endpoint URL |
-
-### Outputs
+### Preview App Action Outputs
 
 | Output | Description |
 |--------|-------------|
-| `url` | The URL where your preview app is hosted |
-| `time` | Timestamp when the deployment was completed |
+| `url` | The URL where your application is deployed |
+| `time` | The timestamp when the deployment was completed |
 
-## Features
+## Example
 
-### Automatic PR Comments
-
-When pushing to a feature branch with an open pull request, the action will automatically:
-1. Deploy your changes
-2. Find the associated PR
-3. Comment the deployment URL as a PR review
-
-This makes it easy to access your preview environment directly from the PR.
-
-### Go Module Support
-
-The action includes built-in support for Go modules:
-- Automatic `go mod tidy` execution
-- Dependency caching for faster builds
-- Proper module initialization
-
-## Testing
-
-The repository includes a comprehensive test suite:
-
-1. **Unit Tests**: Run with `go test ./...`
-2. **Integration Tests**: Use the test application in `go-test-app/`
-3. **End-to-End Tests**: Available in `.github/workflows/test.yml`
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Development Guidelines
-
-- Follow Go best practices and coding standards
-- Add tests for new features
-- Update documentation as needed
-- Keep commits clean and well-documented
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Action fails to start**
-   - Check if the Werft CLI binary is present in `bin/shpr`
-   - Verify the entrypoint script has execute permissions
-   - Check GitHub Actions logs for detailed error messages
-
-2. **Deployment fails**
-   - Verify Werft credentials are correctly set
-   - Check the build folder path is correct
-   - Ensure the platform is supported
-   - Review Werft deployment logs
-
-3. **Container issues**
-   - Verify Docker is running
-   - Check container logs for detailed error messages
-   - Ensure sufficient disk space is available
-
-4. **Go module issues**
-   - Ensure `go.mod` exists in your project
-   - Check if `go mod tidy` runs successfully
-   - Verify Go version compatibility
-
-## Maintenance
-
-### Updating Dependencies
-
-1. Update Go version in workflows if needed
-2. Update Alpine base image in Dockerfile
-3. Update Werft CLI binary in `bin/shpr`
-4. Run tests to ensure compatibility
-
-### Version Management
-
-The action follows semantic versioning:
-- Major version: Breaking changes
-- Minor version: New features
-- Patch version: Bug fixes
-
-## Support
-
-- GitHub Issues: [Report bugs](https://github.com/your-org/werft-deployment-action/issues)
-- Documentation: [User Guide](.github/README.md)
-- Community: [Discussions](https://github.com/your-org/werft-deployment-action/discussions)
+See the [example workflows](.github/workflows/) for complete examples of how to use both actions.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Werft team for their excellent deployment platform
-- GitHub Actions community
-- Contributors and maintainers
+This software is proprietary and confidential. Unauthorized copying, distribution, or use is strictly prohibited. All rights reserved.

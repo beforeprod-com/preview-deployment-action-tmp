@@ -1,0 +1,34 @@
+name: Deploy to BeforeProd
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: A job to deploy a sample app to werft
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.24.1'
+          cache: false
+
+      - name: Initialize Go module
+        run: |
+          cd go-test-app
+          go mod tidy
+
+      - name: Build
+        run: env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -v -o ./go-test-app/build/app ./go-test-app/main.go
+
+      - name: Deploy your preview app to beforeprod
+        uses: ./.github/actions/preview_app
+        id: beforeprod
+        with:
+          build_folder: './go-test-app/build'
+          platform: 'GO'
+        env:
+          BP_USER: ${{ secrets.BP_USER }}
+          BP_PASSWORD: ${{ secrets.BP_PASSWORD }}

@@ -8,6 +8,7 @@ This GitHub Action enables automated deployment of applications to Werft, a plat
 - Support for Go applications
 - Preview URL generation for deployed applications
 - Simple configuration through GitHub Actions workflow
+- Follows GitHub Actions standards for custom actions
 
 ## Usage
 
@@ -15,7 +16,7 @@ To use this action in your GitHub workflow, add the following to your workflow f
 
 ```yaml
 - name: Werft Deployment
-  uses: ./ # Uses an action in the root directory
+  uses: ./.github/actions
   id: werft
   with:
     build_folder: './path/to/build'
@@ -66,7 +67,7 @@ jobs:
         run: env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -v -o ./build/app ./main.go
 
       - name: Deploy to Werft
-        uses: ./
+        uses: ./.github/actions
         id: werft
         with:
           build_folder: './build'
@@ -85,11 +86,12 @@ This action is built using:
 - Alpine Linux as the base container
 - Shell script for the entrypoint
 - Docker for containerization
+- Follows GitHub Actions standards for custom actions
 
 ### Local Development
 
 1. Clone the repository
-2. Make your changes
+2. Make your changes in the `.github/actions` directory
 3. Test locally using `act` or by pushing to a test repository
 4. Submit a pull request
 

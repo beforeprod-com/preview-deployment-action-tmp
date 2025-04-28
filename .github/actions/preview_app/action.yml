@@ -1,0 +1,113 @@
+name: 'Werft deployment action'
+description: 'Deploys your project to werft.run: fast and easy (feasy)'
+inputs:
+  platform: #GO or #JS
+    description: Whether your project runs on GO or JS
+    required: true
+    default: 'JS'
+  build_folder: # where your app has been build
+    description: The folder in which you put the build artefacts e.g. /build
+    required: true
+    default: './build'
+outputs:
+  url: #The URL at which your preview app is hosted by werft
+    description: This is the url at which your app is hosted by werft
+  time: #The time when the deployment was completed
+    description: The timestamp when the deployment was completed
+runs:
+  using: 'composite'
+  steps:
+    - name: Deploy with shpr
+      id: beforeprod
+      shell: sh
+      run: |
+        echo "shpr action starting..."
+        echo "platform: ${{ inputs.platform }}"
+        echo "build_folder: ${{ inputs.build_folder }}"
+
+        # Run shpr app start and capture output
+        echo "Running shpr app start ${{ inputs.platform }} ${{ inputs.build_folder }}..."
+        RAW_OUTPUT=$(${{ github.action_path }}/shpr app start ${{ inputs.platform }} ${{ inputs.build_folder }})
+        echo "RAW_OUTPUT: '$RAW_OUTPUT'"
+
+        # Extract and sanitize the URL
+        URL=$(echo "$RAW_OUTPUT" | grep -o 'https://[^[:space:]]*\.app\.beforeprod\.com' | head -n 1 | tr -d '\n\r')
+
+        if [ -z "$URL" ]; then
+          echo "Error: No valid URL found in shpr app start output"
+          exit 1
+        fi
+
+        echo "Sanitized URL: '$URL'"
+        echo "url=$URL" >> $GITHUB_OUTPUT
+        echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+
+        ${{ github.action_path }}/shpr app list
+
+    - name: Update PR description
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+          
+          const url = '${{ steps.beforeprod.outputs.url }}';
+          if (!url) {
+            core.setFailed('No deployment URL found in outputs');
+            return;
+          }
+
+          async function updatePRDescription() {
+            const branch = context.ref.replace('refs/heads/', '');
+            // Find PRs where this branch is the head
+            const prs = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.repo.owner}:${branch}`,
+              state: 'open'
+            });
+
+            if (!prs.data || prs.data.length === 0) {
+              console.log('No open PRs found for this branch, skipping PR description update');
+              console.log(`Here is at least your preview app URL: ${url}`);
+              return;
+            }
+
+
+            const prNumber = prs.data[0].number;
+            const currentBody = prs.data[0].body || ''; // Handle case where PR has no description
+
+            // Check if the URL is already in the description
+            if (!currentBody.includes(url)) {
+              // Add deployment URL section if it doesn't exist
+              const deploymentSection = `\n\n----\n\n## Deployment URL\n\n🚀 Preview Environment: ${url}\n\n💡 Want your own preview app? Get started at [beforeprod.com](https://beforeprod.com/?ref=gh-action) and deploy your apps in minutes!`;
+              const newBody = currentBody + deploymentSection;
+
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                body: newBody
+              });
+            }
+          }
+
+          const maxRetries = 3;
+          const retryDelay = 2000; // 2 seconds
+
+          for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+              await updatePRDescription();
+              console.log('Successfully updated PR description');
+              break; // Success, exit the retry loop
+            } catch (error) {
+              console.error(`Attempt ${attempt}/${maxRetries} failed:`, error);
+
+              if (attempt === maxRetries) {
+                core.warning('Failed to update PR description after all retry attempts');
+                break;
+              }
+
+              console.log(`Retrying in ${retryDelay/1000} seconds...`);
+              await sleep(retryDelay);
+            }
+          }
