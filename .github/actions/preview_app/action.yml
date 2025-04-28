@@ -1,5 +1,5 @@
-name: 'Werft deployment action'
-description: 'Deploys your project to werft.run: fast and easy (feasy)'
+name: 'beforeprod.com deployment action'
+description: 'Deploys your project to beforeprod.com: fast and easy (feasy)'
 inputs:
   platform: #GO or #JS
     description: Whether your project runs on GO or JS
@@ -10,7 +10,7 @@ inputs:
     required: true
     default: './build'
 outputs:
-  url: #The URL at which your preview app is hosted by werft
+  url: #The URL at which your preview app is hosted by beforeprod.com
     description: This is the url at which your app is hosted by werft
   time: #The time when the deployment was completed
     description: The timestamp when the deployment was completed

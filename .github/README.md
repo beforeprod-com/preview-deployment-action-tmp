@@ -15,9 +15,9 @@ This GitHub Action enables automated deployment of applications to beforeprod.co
 To use this action in your GitHub workflow, add the following to your workflow file:
 
 ```yaml
-- name: Werft Deployment
+- name: beforeprod.com Deployment
   uses: ./.github/actions
-  id: werft
+  id: beforeprod
   with:
     build_folder: './path/to/build'
     platform: 'GO'  # Currently supports GO platform
@@ -33,8 +33,8 @@ To use this action in your GitHub workflow, add the following to your workflow f
 
 ### Environment Variables
 
-- `BP_USER`: Werft platform username (required)
-- `BP_PASSWORD`: Werft platform password (required)
+- `BP_USER`: beforeprod.com platform username (required)
+- `BP_PASSWORD`: beforeprod.com platform password (required)
 
 ### Outputs
 
@@ -46,14 +46,14 @@ To use this action in your GitHub workflow, add the following to your workflow f
 Here's a complete example of how to use this action in your workflow:
 
 ```yaml
-name: Deploy to Werft
+name: Deploy to beforeprod.com
 
 on: [push]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    name: Deploy application to Werft
+    name: Deploy application to beforeprod.com
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -66,7 +66,7 @@ jobs:
       - name: Build
         run: env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -v -o ./build/app ./main.go
 
-      - name: Deploy to Werft
+      - name: Deploy to beforeprod.com
         uses: ./.github/actions
         id: werft
         with:
@@ -77,7 +77,7 @@ jobs:
           BP_PASSWORD: ${{ secrets.BP_PASSWORD }}
 
       - name: Get Preview URL
-        run: echo "Preview URL: ${{ steps.werft.outputs.url }}"
+        run: echo "Preview URL: ${{ steps.beforeprod.outputs.url }}"
 ```
 
 ## Development
@@ -97,4 +97,4 @@ This action is built using:
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the Apache 2.0 License - see the LICENSE file for details.

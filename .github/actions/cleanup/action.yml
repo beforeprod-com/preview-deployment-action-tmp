@@ -1,5 +1,5 @@
-name: 'Werft deployment cleanup'
-description: 'Cleans up werft.run deployments when PRs are closed'
+name: 'beforeprod.com deployment cleanup'
+description: 'Cleans up beforeprod.com deployments when PRs are closed'
 runs:
   using: 'composite'
   steps:
