@@ -18,7 +18,7 @@ This document outlines the process for publishing the BeforeProd GitHub Action t
 3. Add the MIT or Apache 2.0 license
 4. Add a CODE_OF_CONDUCT.md
 
-### 2. Configure Local Development Environment
+### 2. (One time action) Configure Local Development Environment
 
 ```bash
 # Clone your private repository
@@ -57,14 +57,47 @@ git remote -v
 
 ### 2. Create Release
 
-1. Create and push the tag:
+1. Prepare the public release:
+   - Review and sanitize the `action.yml` file
+   - Ensure all dependencies are properly referenced
+   - Remove any private repository references
+   - Verify all paths and file references are correct
+   - Test the action in a clean environment
+
+2. Create and push the release:
    ```bash
+   # Create a fresh branch for the public release
+   git checkout --orphan public-release/vX.Y.Z
+
+   # Remove all files from the staging area
+   git rm -rf .
+
+   # Copy only the files needed for the public release
+   # (This ensures no private files or history are included)
+   cp -r /path/to/private/repo/action.yml .
+   cp -r /path/to/private/repo/dist .
+   cp -r /path/to/private/repo/README.md .
+   # ... copy other necessary files
+
+   # Add and commit the files
+   git add .
+   git commit -m "Release vX.Y.Z"
+
+   # Push to public repository's main branch
+   git push -f public public-release/vX.Y.Z:main
+
+   # Create and push the tag
    git tag vX.Y.Z
-   git push public release/vX.Y.Z
    git push public vX.Y.Z
    ```
 
-2. Create GitHub Release:
+3. Verify the release:
+   - Test the action in a sample workflow
+   - Verify all inputs and outputs work as expected
+   - Check that no private information is exposed
+   - Ensure all documentation is accurate
+
+4. Create GitHub Release:
    - Go to your public repository on GitHub
    - Click "Releases"
    - Click "Draft a new release"
@@ -72,11 +105,11 @@ git remote -v
    - Fill in release title and description
    - Check "Publish this Action to the GitHub Marketplace"
    - Fill in required marketplace information:
-     - Action name
-     - Description
-     - Icon (recommended: upload-cloud)
-     - Color (recommended: blue)
-     - Categories
+      - Action name
+      - Description
+      - Icon (recommended: upload-cloud)
+      - Color (recommended: blue)
+      - Categories
    - Click "Publish release"
 
 ## Versioning Guidelines
