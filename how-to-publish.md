@@ -69,18 +69,16 @@ git remote -v
    # Create a fresh branch for the public release
    git checkout --orphan public-release/vX.Y.Z
 
-   # Remove all files from the staging area
-   git rm -rf .
+   # Remove all files from git tracking (but keep them in working directory)
+   git rm -rf --cached .
 
-   # Copy only the files needed for the public release
-   # (This ensures no private files or history are included)
-   cp -r /path/to/private/repo/action.yml .
-   cp -r /path/to/private/repo/dist .
-   cp -r /path/to/private/repo/README.md .
-   # ... copy other necessary files
+   # Now we can selectively add only the files we want to publish
+   git add action.yml
+   git add dist/
+   git add README.md
+   # ... add other necessary files
 
-   # Add and commit the files
-   git add .
+   # Commit the files
    git commit -m "Release vX.Y.Z"
 
    # Push to public repository's main branch
