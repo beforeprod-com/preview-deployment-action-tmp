@@ -1,4 +1,4 @@
-# Werft Deployment GitHub Action
+# Beforeprod.com Deployment GitHub Action
 
 This GitHub Action enables automated deployment of applications to beforeprod.com, a platform for preview deployments. It provides a streamlined way to deploy applications as part of your CI/CD pipeline.
 
@@ -68,7 +68,7 @@ jobs:
 
       - name: Deploy to beforeprod.com
         uses: ./.github/actions
-        id: werft
+        id: beforeprod
         with:
           build_folder: './build'
           platform: 'GO'
