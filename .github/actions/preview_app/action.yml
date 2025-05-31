@@ -48,7 +48,6 @@ runs:
       uses: actions/github-script@v7
       env:
         REPO: ${{ github.repository }}
-        BRANCH: ${{ github.head_ref }}
       with:
         script: |
           const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -82,7 +81,7 @@ runs:
             // Check if the URL is already in the description
             if (!currentBody.includes(url)) {
               // Add deployment URL section if it doesn't exist
-              const deploymentSection = `\n\n----\n\n## Your Preview Environment for this branch:\n\n🚀 Deployment URL: ${url}\n\n💡 Want your own preview app? Get started at [beforeprod.com](https://beforeprod.com/?ref=gh-action&repo=${process.env.REPO}&branch=${process.env.BRANCH}) and [deploy your apps in minutes](https://beforeprod.com/?ref=gh-action2&repo=${process.env.REPO}&branch=${process.env.BRANCH})!`;
+              const deploymentSection = `\n\n----\n\n## Your Preview Environment for this branch:\n\n🚀 Deployment URL: ${url}\n\n💡 Want your own preview app? Get started at [beforeprod.com](https://beforeprod.com/?ref=gh-action&repo=${process.env.REPO}) and [deploy your apps in minutes](https://beforeprod.com/?ref=gh-action2&repo=${process.env.REPO})!`;
               const newBody = currentBody + deploymentSection;
 
               await github.rest.pulls.update({
