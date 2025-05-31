@@ -79,7 +79,7 @@ runs:
             // Check if the URL is already in the description
             if (!currentBody.includes(url)) {
               // Add deployment URL section if it doesn't exist
-              const deploymentSection = `\n\n----\n\n## Deployment URL\n\n🚀 Preview Environment: ${url}\n\n💡 Want your own preview app? Get started at [beforeprod.com](https://beforeprod.com/?ref=gh-action) and deploy your apps in minutes!`;
+              const deploymentSection = `\n\n----\n\n## Your Preview Environment for this branch:\n\n🚀 Deployment URL: ${url}\n\n💡 Want your own preview app? Get started at [beforeprod.com](https://beforeprod.com/?ref=gh-action&repo={github.repository}&branch={github.head_ref}) and [deploy your apps in minutes](https://beforeprod.com/?ref=gh-action2&repo={github.repository}&branch={github.head_ref})!`;
               const newBody = currentBody + deploymentSection;
 
               await github.rest.pulls.update({
