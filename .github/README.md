@@ -12,6 +12,8 @@ This GitHub Action enables automated deployment of applications to beforeprod.co
 
 ## Usage
 
+> **Important**: Before using this action, ensure that your repository has the necessary permissions enabled. Go to your repository's Settings > Actions > Workflow Permissions and enable "Read and Write permissions". This is required for the action to function properly, particularly for features like updating Pull Request bodies.
+
 To use this action in your GitHub workflow, add the following to your workflow file:
 
 ```yaml
