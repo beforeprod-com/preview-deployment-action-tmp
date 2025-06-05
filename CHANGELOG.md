@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Added Code of Conduct
+- Added comprehensive publishing guide (removed)
+- Added workflow permissions requirement documentation
+- Updated shpr binary to v0.0.37 with improved deployment features
+
+### Changed
+- Optimized workflow to only run on pull request events (opened, synchronize, reopened)
+- Improved action and step naming for better clarity and user experience
+- Updated documentation to reflect PR-only deployment strategy
+- Improved attribution and branding
+- Updated README with new features and improvements
+- Enhanced PR comment functionality using pull request review API
+
+### Fixed
+- Fixed Docker action configuration for proper input handling
+- Fixed URL capture and output from shpr app start command
+- Fixed environment variable handling in actions
+- Fixed build and deployment configuration for Go applications
+
+### Removed
+- Removed local shpr binary build in favor of distribution from werft repo releases (still local but put in from releases)
+- Removed redundant Docker-related files and configurations
+
 ## [0.0.1] - 2024-04-28
 
 ### Added
