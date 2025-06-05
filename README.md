@@ -20,8 +20,10 @@ This GitHub Action automatically deploys your application to [BeforeProd](https:
 The deployment action (`.github/actions/preview_app`) handles the deployment of your application. Add the following to your workflow file (e.g., `.github/workflows/deploy.yml`):
 
 ```yaml
-name: Deploy to BeforeProd
-on: [push]
+name: BeforeProd preview app action
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   deploy:
@@ -30,14 +32,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy to BeforeProd
+      - name: Create a preview app on beforeprod.com
         uses: ./.github/actions/preview_app
         with:
           platform: 'JS'  # or 'GO' for Go applications
           build_folder: './build'  # path to your build artifacts
 ```
 
-> **Note**: The action will automatically update PR descriptions with deployment URLs. For direct branch pushes (without a PR), the deployment URL will be logged in the GitHub Actions output for easy access.
+> **Note**: The action will automatically update PR descriptions with deployment URLs. The action only runs on pull request events (opened, updated, or reopened) to ensure deployments are only created when needed.
 
 ### Cleanup Action
 
@@ -70,7 +72,7 @@ The action is organized into two main components:
 1. **Preview App Action** (`.github/actions/preview_app/`)
    - Handles the deployment of your application
    - Updates PR descriptions with deployment URLs
-   - Triggered on `push` events
+   - Triggered on `pull_request` events (opened, synchronize, reopened)
    - Contains its own copy of the BeforeProd CLI binary
 
 2. **Cleanup Action** (`.github/actions/cleanup/`)
