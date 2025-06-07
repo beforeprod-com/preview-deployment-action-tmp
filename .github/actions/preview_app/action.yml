@@ -12,8 +12,10 @@ inputs:
 outputs:
   url: #The URL at which your preview app is hosted by beforeprod.com
     description: This is the url at which your app is hosted by werft
+    value: ${{ steps.beforeprod.outputs.url }}
   time: #The time when the deployment was completed
     description: The timestamp when the deployment was completed
+    value: ${{ steps.beforeprod.outputs.time }}
 runs:
   using: 'composite'
   steps:
@@ -51,7 +53,7 @@ runs:
       with:
         script: |
           const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-          
+
           const url = '${{ steps.beforeprod.outputs.url }}';
           if (!url) {
             core.setFailed('No deployment URL found in outputs');
