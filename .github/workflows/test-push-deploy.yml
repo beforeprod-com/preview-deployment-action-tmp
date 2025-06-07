@@ -8,14 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to deploy a sample app to werft
     steps:
-      - name: Debug GitHub Context
-        run: |
-          echo "GITHUB_REF_NAME: $GITHUB_REF_NAME"
-          echo "GITHUB_HEAD_REF: $GITHUB_HEAD_REF"
-          echo "GITHUB_REF: $GITHUB_REF"
-          echo "GITHUB_SHA: $GITHUB_SHA"
-          echo "Current branch: $(git branch --show-current)"
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
