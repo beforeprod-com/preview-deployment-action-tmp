@@ -12,8 +12,10 @@ inputs:
 outputs:
   url: #The URL at which your preview app is hosted by beforeprod.com
     description: This is the url at which your app is hosted by werft
+    value: ${{ steps.beforeprod.outputs.url }}
   time: #The time when the deployment was completed
     description: The timestamp when the deployment was completed
+    value: ${{ steps.beforeprod.outputs.time }}
 runs:
   using: 'composite'
   steps:
@@ -51,7 +53,7 @@ runs:
       with:
         script: |
           const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-          
+
           const url = '${{ steps.beforeprod.outputs.url }}';
           if (!url) {
             core.setFailed('No deployment URL found in outputs');
@@ -59,7 +61,8 @@ runs:
           }
 
           async function updatePRDescription() {
-            const branch = context.ref.replace('refs/heads/', '');
+            // Get the actual branch name from the PR payload
+            const branch = context.payload.pull_request.head.ref;
             // Find PRs where this branch is the head
             const prs = await github.rest.pulls.list({
               owner: context.repo.owner,
@@ -81,7 +84,7 @@ runs:
             // Check if the URL is already in the description
             if (!currentBody.includes(url)) {
               // Add deployment URL section if it doesn't exist
-              const deploymentSection = `\n\n----\n\n## Your Preview Environment for this branch:\n\n🚀 Deployment URL: ${url}\n\n💡 Want your own preview app? Get started at [beforeprod.com](https://beforeprod.com/?ref=gh-action&repo=${process.env.REPO}) and [deploy your apps in minutes](https://beforeprod.com/?ref=gh-action2&repo=${process.env.REPO})!`;
+              const deploymentSection = `\n\n----\n\n## Your Preview Deployment for this branch:\n\n🚀 Deployment URL: ${url}\n\n💡 Want your own preview deployment? Get started at [beforeprod.com](https://beforeprod.com/?ref=gh-action&repo=${process.env.REPO}) and [deploy your apps in minutes](https://beforeprod.com/?ref=gh-action2&repo=${process.env.REPO})!`;
               const newBody = currentBody + deploymentSection;
 
               await github.rest.pulls.update({
