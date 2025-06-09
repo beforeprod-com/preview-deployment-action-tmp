@@ -61,7 +61,8 @@ runs:
           }
 
           async function updatePRDescription() {
-            const branch = context.ref.replace('refs/heads/', '');
+            // Get the actual branch name from the PR payload
+            const branch = context.payload.pull_request.head.ref;
             // Find PRs where this branch is the head
             const prs = await github.rest.pulls.list({
               owner: context.repo.owner,
