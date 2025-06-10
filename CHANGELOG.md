@@ -8,12 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Added test workflows for PR deployment and cleanup
+- Added support for Go 1.24.1 in test workflow
 - Added Code of Conduct
 - Added comprehensive publishing guide (removed)
 - Added workflow permissions requirement documentation
 - Updated shpr binary to v0.0.37 with improved deployment features
 
 ### Changed
+- Updated test workflow to use actions/checkout@v4 and actions/setup-go@v4
 - Optimized workflow to only run on pull request events (opened, synchronize, reopened)
 - Improved action and step naming for better clarity and user experience
 - Updated documentation to reflect PR-only deployment strategy
